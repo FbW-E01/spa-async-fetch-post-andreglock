@@ -7,6 +7,7 @@ import "babel-polyfill";
 const form = document.querySelector("#submit-form");
 const name = document.querySelector("#name");
 const email = document.querySelector("#email");
+const password = document.querySelector("#password");
 const message = document.querySelector("#message");
 const checkbox = document.querySelector("#checkbox");
 
@@ -16,20 +17,26 @@ const getUser = async (user) => {
             method: "POST",
             body: JSON.stringify(user),
         });
-        return data;
+        return data.json();
     } catch {
         console.warn("Error");
     }
 }
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
     e.preventDefault(); // prevents the form to be send
-    alert("You submitted");
     const user = {
         name: name.value,
         email: email.value,
+        password: password.value,
         message: message.value,
         checkbox: checkbox.checked,
     };
-    getUser(user).then(console.log);
+    try {
+        const json = await getUser(user);
+        console.log(json);
+        alert(`User data saved \n UserID: ${json.id}`)
+    } catch (error) {
+        console.log("Error:", error);
+    }
 });
